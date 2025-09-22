@@ -1,73 +1,46 @@
-"use client";
+import { supabaseServer } from "@/lib/supabase-server";
+import { prisma } from "@/lib/prisma";
+import { signOut } from "@/lib/actions/logout";
+import { ensureProfile } from "@/lib/actions/profile";
+import { LogOut } from "lucide-react";
+import { ProfileActions } from "@/components/ProfileActions";
 
-import AvatarEmoji from "@/components/AvatarEmoji";
-import { Pencil, ChevronRight, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+export default async function YouPage() {
+  const supabase = supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return (
+      <section className="max-w-sm mx-auto">
+        <p className="mb-3">You are signed out.</p>
+        <a className="underline" href="/login">
+          Go to login
+        </a>
+      </section>
+    );
+  }
+  await ensureProfile();
 
-export default function Page() {
-  const router = useRouter();
-
-  const profile = {
-    displayName: "hilmi razib yusuf",
-    username: "hilmi",
-    avatarEmoji: "😄",
-    avatarBg: "bg-yellow-200",
-    wallpaper: "Brand Doodle",
-  };
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+  });
 
   return (
     <section className="mx-auto w-full max-w-md">
       {/* Header user */}
-      <div className="flex items-center gap-3 p-4 bg-white">
-        <AvatarEmoji emoji={profile.avatarEmoji} bg={profile.avatarBg} />
-        <div className="flex-1">
-          <div className="font-semibold leading-tight">
-            {profile.displayName}
-          </div>
-          <div className="text-sm text-gray-500 leading-tight">
-            {profile.username}
-          </div>
-        </div>
-        <button
-          className="p-2 rounded-full hover:bg-gray-100 active:bg-gray-200"
-          aria-label="Edit profile"
-          onClick={() => router.push("/you/edit")}
-        >
-          <Pencil size={18} className="text-gray-600" />
-        </button>
-      </div>
-
-      {/* Section label */}
-      <div className="px-4 pt-4 text-xs font-semibold tracking-wider text-gray-500">
-        SPACE THEME
-      </div>
-
-      {/* List item: Wallpaper */}
-      <button
-        className="w-full bg-white px-4 py-3 flex items-center justify-between active:bg-gray-50"
-        onClick={() => router.push("/you/wallpaper")}
-      >
-        <span className="text-sm">Wallpaper</span>
-        <span className="flex items-center gap-2 text-sm text-gray-500">
-          {profile.wallpaper}
-          <ChevronRight size={18} className="text-gray-400" />
-        </span>
-      </button>
+      <ProfileActions profile={profile} />
 
       {/* Divider */}
       <div className="h-3" />
 
       {/* Logout */}
-      <button
-        className="w-full bg-white px-4 py-3 flex items-center gap-2 text-orange-600 active:bg-orange-50"
-        onClick={() => {
-          // TODO: supabase.auth.signOut().then(()=>router.replace('/login'))
-          alert("Log out (coming soon)");
-        }}
-      >
-        <LogOut size={18} />
-        <span className="text-sm">Log out</span>
-      </button>
+      <form action={signOut}>
+        <button className="w-full bg-white px-4 py-3 flex items-center gap-2 text-orange-600 active:bg-orange-50">
+          <LogOut size={18} />
+          <span className="text-sm">Log out</span>
+        </button>
+      </form>
 
       <div className="pb-16" />
     </section>
