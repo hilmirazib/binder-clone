@@ -5,13 +5,13 @@ Dibangun dengan fokus pada kesederhanaan, realtime, dan pengalaman pengguna.
 
 ## Stack
 
-* **Framework**: [Next.js](https://nextjs.org/) (App Router, TypeScript)
-* **UI**: [Tailwind CSS](https://tailwindcss.com/)
-* **Database**: PostgreSQL (hosted via [Supabase](https://supabase.com/))
-* **ORM**: [Prisma](https://www.prisma.io/)
-* **Auth**: Supabase Auth (OTP / magic link)
-* **Realtime**: Supabase Realtime (changes + broadcast/presence)
-* **Hosting**: Vercel (frontend) + Supabase (DB/Auth/Realtime)
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, TypeScript)
+- **UI**: [Tailwind CSS](https://tailwindcss.com/)
+- **Database**: PostgreSQL (hosted via [Supabase](https://supabase.com/))
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **Auth**: Supabase Auth (OTP / magic link)
+- **Realtime**: Supabase Realtime (changes + broadcast/presence)
+- **Hosting**: Vercel (frontend) + Supabase (DB/Auth/Realtime)
 
 ## Cara Menjalankan (Development)
 
@@ -38,9 +38,15 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 ## Status Progres
 
-* ✅ Persiapan awal (stack & repo)
-* 🔄 Setup project (Next.js + Tailwind + tooling)
-* ⏳ Integrasi Supabase (DB, Auth, Realtime)
-* ⏳ Fitur utama: grup, chat, notes
+- ✅ Persiapan awal (stack & repo)
+- 🔄 Setup project (Next.js + Tailwind + tooling)
+- ⏳ Integrasi Supabase (DB, Auth, Realtime)
+- ⏳ Fitur utama: grup, chat, notes
+
+## TODO (Docker)
+
+- Dockerfile untuk Next.js (builder + runner)
+- docker-compose dengan service web + (nantinya) postgres lokal (opsional)
+- dukung `.env` build-time untuk Supabase (production)
 
 ---
