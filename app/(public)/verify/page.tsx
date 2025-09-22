@@ -5,11 +5,15 @@ import { supabaseBrowser } from "@/lib/supabase-browser";
 export default function VerifyPage() {
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
+  const [channel, setChannel] = useState<"sms" | "whatsapp">("sms");
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    const p = new URLSearchParams(window.location.search).get("phone");
+    const sp = new URLSearchParams(window.location.search);
+    const p = sp.get("phone");
+    const ch = sp.get("ch") as "sms" | "whatsapp" | null;
     if (p) setPhone(p);
+    if (ch === "whatsapp") setChannel("whatsapp");
   }, []);
 
   async function verify() {
@@ -19,13 +23,12 @@ export default function VerifyPage() {
       const { error } = await supabase.auth.verifyOtp({
         phone,
         token: code,
-        type: "sms",
+        type: "sms", // <- tetap 'sms' walau channel WA
       });
       if (error) throw error;
-      // sukses -> ke onboarding (ensure profile terjadi di server)
       window.location.href = "/you";
     } catch (e: any) {
-      setErr(e.message ?? "Wrong code, try again.");
+      setErr(e?.message ?? "Wrong code, try again.");
     }
   }
 
@@ -33,8 +36,10 @@ export default function VerifyPage() {
     <section className="max-w-sm mx-auto space-y-4">
       <h1 className="text-2xl font-semibold">Enter the code</h1>
       <p className="text-sm text-gray-600">
-        We sent an SMS to {phone || "your phone"}.
+        We sent a code via <b>{channel.toUpperCase()}</b> to{" "}
+        {phone || "your phone"}.
       </p>
+
       <input
         className="w-full border rounded px-3 py-2 tracking-widest text-center"
         value={code}
@@ -42,12 +47,14 @@ export default function VerifyPage() {
         placeholder="6-digit code"
         maxLength={6}
       />
+
       <button
         className="px-3 py-2 rounded bg-black text-white"
         onClick={verify}
       >
         Verify
       </button>
+
       {err && <p className="text-sm text-red-600">{err}</p>}
     </section>
   );
