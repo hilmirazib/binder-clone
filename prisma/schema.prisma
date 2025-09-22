@@ -13,3 +13,102 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum MemberRole {
+  owner
+  admin
+  member
+}
+
+enum NoteStatus {
+  draft
+  published
+}
+
+model Profile {
+  userId      String   @id @db.Uuid
+  displayName String?  @db.VarChar(100)
+  username    String?  @unique @db.VarChar(32)
+  avatarEmoji String?  @db.VarChar(16)
+  avatarColor String?  @db.VarChar(32)
+  avatarUrl   String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // relations
+  groupsOwned   Group[]       @relation("GroupsOwned")
+  messages      Message[]
+  notesAuthored Note[]
+  GroupMember   GroupMember[]
+}
+
+model Group {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @db.VarChar(100)
+  ownerId   String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  owner    Profile       @relation("GroupsOwned", fields: [ownerId], references: [userId], onDelete: Cascade)
+  members  GroupMember[]
+  messages Message[]
+  notes    Note[]
+
+  @@index([ownerId])
+}
+
+model GroupMember {
+  groupId  String     @db.Uuid
+  userId   String     @db.Uuid
+  role     MemberRole @default(member)
+  joinedAt DateTime   @default(now())
+
+  group Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([groupId, userId])
+  @@index([groupId])
+}
+
+model Message {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  groupId   String   @db.Uuid
+  userId    String   @db.Uuid
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  idx       BigInt?  @db.BigInt
+
+  group  Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  author Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([groupId, createdAt(sort: Desc)])
+}
+
+model Note {
+  id        String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  groupId   String     @db.Uuid
+  authorId  String     @db.Uuid
+  title     String?    @db.VarChar(200)
+  status    NoteStatus @default(draft)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  group  Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  author Profile     @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  blocks NoteBlock[]
+
+  @@index([groupId, updatedAt(sort: Desc)])
+}
+
+model NoteBlock {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  noteId    String   @db.Uuid
+  order     Int
+  type      String   @db.VarChar(32)
+  content   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@index([noteId, order])
+}

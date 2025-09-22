@@ -9,6 +9,7 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
+    "prisma:format": "prisma format",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prepare": "husky"
