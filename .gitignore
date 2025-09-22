@@ -1,0 +1,13 @@
+node_modules/
+pnpm-lock.yaml
+
+.next/
+out/
+.next-static/
+.next/trace
+.vercel/
+
+
+.env
+.env.*
+!.env.example
