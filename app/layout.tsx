@@ -25,9 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-white text-black">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="min-h-screen flex flex-col">
+        <main className="flex-1 pb-16">{children}</main>
         <Nav />
-        <main className="mx-auto max-w-3xl px-4 py-6">{children}</main>
       </body>
     </html>
   );
