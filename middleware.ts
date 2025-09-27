@@ -1,50 +1,47 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-const PUBLIC_PATHS = ["/", "/login", "/verify", "/favicon.ico", "/robots.txt"];
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  // Add your middleware logic here
-  const { pathname } = request.nextUrl;
-  if (PUBLIC_PATHS.some((p) => pathname === p)) return NextResponse.next();
-
-  // hanya proteksi area berikut:
-  const protectedPrefixes = ["/space", "/you"];
-  const protectedRoute = protectedPrefixes.some((p) => pathname.startsWith(p));
-  if (!protectedRoute) return NextResponse.next();
-
+export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: any) {
-          res.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options: any) {
-          res.cookies.set({ name, value: "", ...options });
-        },
-      },
-    },
-  );
+  const supabase = createMiddlewareClient({ req, res });
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("redirectedFrom", pathname);
-    return NextResponse.redirect(url);
+
+  const publicRoutes = ["/", "/login", "/verify", "/splash", "/onboarding"];
+
+  const isPublicRoute = publicRoutes.some((route) =>
+    req.nextUrl.pathname.startsWith(route),
+  );
+
+  if (!user && !isPublicRoute) {
+    return NextResponse.redirect(new URL("/splash", req.url));
+  }
+
+  if (
+    user &&
+    (req.nextUrl.pathname === "/login" || req.nextUrl.pathname === "/splash")
+  ) {
+    const { data: profile } = await supabase
+      .from("Profile")
+      .select("display_name, username")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.display_name && profile?.username) {
+      return NextResponse.redirect(new URL("/space", req.url));
+    } else {
+      return NextResponse.redirect(new URL("/onboarding", req.url));
+    }
   }
 
   return res;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|assets|api).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };
