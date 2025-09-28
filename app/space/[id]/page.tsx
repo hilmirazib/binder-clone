@@ -40,11 +40,12 @@ import {
 import { GroupService } from "@/lib/services/groupService";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { GroupWithMembers } from "@/lib/types/group";
+import { ChatRoom } from "@/components/chat/ChatRoom";
 
 export default function GroupDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [group, setGroup] = useState<GroupWithMembers | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"chat" | "notes" | "members">(
@@ -277,18 +278,7 @@ export default function GroupDetailPage() {
       {/* Tab Content */}
       <div className="max-w-md mx-auto">
         {activeTab === "chat" && (
-          <div className="p-4">
-            <div className="text-center py-8">
-              <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Start Chatting
-              </h3>
-              <p className="text-gray-600 mb-4">
-                No messages yet. Be the first to send a message!
-              </p>
-              <Button>Send First Message</Button>
-            </div>
-          </div>
+          <ChatRoom groupId={groupId} groupName={group.name} />
         )}
 
         {activeTab === "notes" && (

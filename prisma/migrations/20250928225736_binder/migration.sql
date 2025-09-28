@@ -14,6 +14,10 @@ CREATE TABLE "public"."Profile" (
     "avatarUrl" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "email" VARCHAR(255),
+    "phone" VARCHAR(16),
+    "bio" TEXT,
+    "lastUsernameChange" TIMESTAMP(3),
 
     CONSTRAINT "Profile_pkey" PRIMARY KEY ("userId")
 );
@@ -24,6 +28,11 @@ CREATE TABLE "public"."Group" (
     "name" VARCHAR(100) NOT NULL,
     "ownerId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "avatarColor" VARCHAR(7),
+    "avatarEmoji" VARCHAR(10),
+    "description" TEXT,
+    "inviteCode" VARCHAR(8),
+    "isPublic" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Group_pkey" PRIMARY KEY ("id")
 );
@@ -80,7 +89,19 @@ CREATE TABLE "public"."NoteBlock" (
 CREATE UNIQUE INDEX "Profile_username_key" ON "public"."Profile"("username");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Profile_email_key" ON "public"."Profile"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Profile_phone_key" ON "public"."Profile"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Group_inviteCode_key" ON "public"."Group"("inviteCode");
+
+-- CreateIndex
 CREATE INDEX "Group_ownerId_idx" ON "public"."Group"("ownerId");
+
+-- CreateIndex
+CREATE INDEX "Group_inviteCode_idx" ON "public"."Group"("inviteCode");
 
 -- CreateIndex
 CREATE INDEX "GroupMember_groupId_idx" ON "public"."GroupMember"("groupId");
@@ -110,10 +131,10 @@ ALTER TABLE "public"."Message" ADD CONSTRAINT "Message_groupId_fkey" FOREIGN KEY
 ALTER TABLE "public"."Message" ADD CONSTRAINT "Message_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."Profile"("userId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Note" ADD CONSTRAINT "Note_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "public"."Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."Note" ADD CONSTRAINT "Note_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "public"."Profile"("userId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Note" ADD CONSTRAINT "Note_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "public"."Profile"("userId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."Note" ADD CONSTRAINT "Note_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "public"."Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."NoteBlock" ADD CONSTRAINT "NoteBlock_noteId_fkey" FOREIGN KEY ("noteId") REFERENCES "public"."Note"("id") ON DELETE CASCADE ON UPDATE CASCADE;
