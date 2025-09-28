@@ -28,14 +28,16 @@ enum NoteStatus {
 model Profile {
   userId      String   @id @db.Uuid
   email       String?  @unique @db.VarChar(255)
-  phone       String   @unique @db.VarChar(16)
+  phone       String?   @unique @db.VarChar(16)
   displayName String?  @db.VarChar(100)
   username    String?  @unique @db.VarChar(32)
   avatarEmoji String?  @db.VarChar(16)
   avatarColor String?  @db.VarChar(32)
+  bio         String? 
   avatarUrl   String?  @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  lastUsernameChange DateTime?
 
   // relations
   groupsOwned   Group[]       @relation("GroupsOwned")

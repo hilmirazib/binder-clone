@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabaseBrowser } from "@/lib/supabase-browser";
+import { verifyOTP } from "@/lib/auth-helpers";
 
 export default function VerifyPage() {
   const [phone, setPhone] = useState("");
@@ -17,18 +17,16 @@ export default function VerifyPage() {
   }, []);
 
   async function verify() {
-    setErr(null);
     try {
-      const supabase = supabaseBrowser();
-      const { error } = await supabase.auth.verifyOtp({
-        phone,
-        token: code,
-        type: "sms", // <- tetap 'sms' walau channel WA
-      });
-      if (error) throw error;
-      window.location.href = "/you";
-    } catch (e: any) {
-      setErr(e?.message ?? "Wrong code, try again.");
+      const result = await verifyOTP(phone, code);
+
+      if (result.user) {
+        window.location.href = "/you";
+      }
+    } catch (error) {
+      setErr("Wrong code, try again.");
+    } finally {
+      setErr(null);
     }
   }
 

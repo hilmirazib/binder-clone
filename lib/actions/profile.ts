@@ -19,8 +19,6 @@ export async function ensureProfile() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthenticated");
-
-  // buat username default: slug(nama/phone) + 4 digit
   const base =
     slugBase(
       user.user_metadata?.name ?? user.phone?.replace(/^\+/, "") ?? "user",
@@ -33,6 +31,7 @@ export async function ensureProfile() {
       userId: user.id,
       displayName: user.user_metadata?.name ?? null,
       username: candidate,
+      phone: user.phone ?? null,
     },
     update: {},
   });
