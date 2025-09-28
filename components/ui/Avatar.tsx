@@ -30,7 +30,6 @@ export function Avatar({
 }: AvatarProps) {
   const sizeClass = sizeClasses[size];
 
-  // Use uploaded avatar if available
   if (profile?.avatarUrl) {
     return (
       <div

@@ -1,63 +1,50 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-enum MemberRole {
-  owner
-  admin
-  member
-}
-
-enum NoteStatus {
-  draft
-  published
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Profile {
-  userId      String   @id @db.Uuid
-  email       String?  @unique @db.VarChar(255)
-  phone       String?   @unique @db.VarChar(16)
-  displayName String?  @db.VarChar(100)
-  username    String?  @unique @db.VarChar(32)
-  avatarEmoji String?  @db.VarChar(16)
-  avatarColor String?  @db.VarChar(32)
-  bio         String? 
-  avatarUrl   String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  userId             String        @id @db.Uuid
+  displayName        String?       @db.VarChar(100)
+  username           String?       @unique @db.VarChar(32)
+  avatarEmoji        String?       @db.VarChar(16)
+  avatarColor        String?       @db.VarChar(32)
+  avatarUrl          String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  email              String?       @unique @db.VarChar(255)
+  phone              String?       @unique @db.VarChar(16)
+  bio                String?
   lastUsernameChange DateTime?
-
-  // relations
-  groupsOwned   Group[]       @relation("GroupsOwned")
-  messages      Message[]
-  notesAuthored Note[]
-  GroupMember   GroupMember[]
+  groupsOwned        Group[]       @relation("GroupsOwned")
+  GroupMember        GroupMember[]
+  messages           Message[]
+  notesAuthored      Note[]
 }
 
 model Group {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String   @db.VarChar(100)
-  ownerId   String   @db.Uuid
-  createdAt DateTime @default(now())
-
-  owner    Profile       @relation("GroupsOwned", fields: [ownerId], references: [userId], onDelete: Cascade)
-  members  GroupMember[]
-  messages Message[]
-  notes    Note[]
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String        @db.VarChar(100)
+  ownerId     String        @db.Uuid
+  createdAt   DateTime      @default(now())
+  avatarColor String?       @db.VarChar(7)
+  avatarEmoji String?       @db.VarChar(10)
+  description String?
+  inviteCode  String?       @unique @db.VarChar(8)
+  isPublic    Boolean       @default(false)
+  owner       Profile       @relation("GroupsOwned", fields: [ownerId], references: [userId], onDelete: Cascade)
+  members     GroupMember[]
+  messages    Message[]
+  notes       Note[]
 
   @@index([ownerId])
+  @@index([inviteCode])
 }
 
 model GroupMember {
@@ -65,9 +52,8 @@ model GroupMember {
   userId   String     @db.Uuid
   role     MemberRole @default(member)
   joinedAt DateTime   @default(now())
-
-  group Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  user  Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  group    Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     Profile    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@id([groupId, userId])
   @@index([groupId])
@@ -77,28 +63,26 @@ model Message {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   groupId   String   @db.Uuid
   userId    String   @db.Uuid
-  content   String   @db.Text
+  content   String
   createdAt DateTime @default(now())
-  idx       BigInt?  @db.BigInt
-
-  group  Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  author Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  idx       BigInt?
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  author    Profile  @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@index([groupId, createdAt(sort: Desc)])
 }
 
 model Note {
-  id        String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  groupId   String     @db.Uuid
-  authorId  String     @db.Uuid
-  title     String?    @db.VarChar(200)
-  status    NoteStatus @default(draft)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-
-  group  Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  author Profile     @relation(fields: [authorId], references: [userId], onDelete: Cascade)
-  blocks NoteBlock[]
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  groupId   String      @db.Uuid
+  authorId  String      @db.Uuid
+  title     String?     @db.VarChar(200)
+  status    NoteStatus  @default(draft)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  author    Profile     @relation(fields: [authorId], references: [userId], onDelete: Cascade)
+  group     Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  blocks    NoteBlock[]
 
   @@index([groupId, updatedAt(sort: Desc)])
 }
@@ -111,8 +95,18 @@ model NoteBlock {
   content   Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
 
   @@index([noteId, order])
+}
+
+enum MemberRole {
+  owner
+  admin
+  member
+}
+
+enum NoteStatus {
+  draft
+  published
 }
