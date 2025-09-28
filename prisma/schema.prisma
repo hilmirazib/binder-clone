@@ -27,6 +27,8 @@ enum NoteStatus {
 
 model Profile {
   userId      String   @id @db.Uuid
+  email       String?  @unique @db.VarChar(255)
+  phone       String   @unique @db.VarChar(16)
   displayName String?  @db.VarChar(100)
   username    String?  @unique @db.VarChar(32)
   avatarEmoji String?  @db.VarChar(16)
