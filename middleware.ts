@@ -17,14 +17,14 @@ export async function middleware(req: NextRequest) {
       console.error("Middleware auth error:", error);
     }
 
-    const publicRoutes = ["/", "/login", "/verify", "/splash", "/onboarding"];
+    const publicRoutes = ["/", "/login", "/verify", "/onboarding"];
 
     const isPublicRoute = publicRoutes.some((route) =>
       req.nextUrl.pathname.startsWith(route),
     );
 
     if (!session && !isPublicRoute) {
-      const redirectUrl = new URL("/splash", req.url);
+      const redirectUrl = new URL("/", req.url);
       console.log("Redirecting unauthenticated user to splash");
       return NextResponse.redirect(redirectUrl);
     }
