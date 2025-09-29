@@ -41,6 +41,11 @@ import { GroupService } from "@/lib/services/groupService";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { GroupWithMembers } from "@/lib/types/group";
 import { ChatRoom } from "@/components/chat/ChatRoom";
+import { NotesList } from "@/components/notes/NotesList";
+import { NoteEditor } from "@/components/notes/NoteEditor";
+import { NoteViewer } from "@/components/notes/NoteViewer";
+
+type ViewMode = "list" | "create" | "edit" | "view";
 
 export default function GroupDetailPage() {
   const params = useParams();
@@ -54,6 +59,9 @@ export default function GroupDetailPage() {
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [isLeavingGroup, setIsLeavingGroup] = useState(false);
   const [copiedInvite, setCopiedInvite] = useState(false);
+
+  const [notesViewMode, setNotesViewMode] = useState<ViewMode>("list");
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
 
   const groupId = params?.id as string;
 
@@ -81,6 +89,32 @@ export default function GroupDetailPage() {
 
     loadGroup();
   }, [user, groupId, router]);
+
+  const handleCreateNote = () => {
+    setNotesViewMode("create");
+    setSelectedNoteId(null);
+  };
+
+  const handleEditNote = (noteId: string) => {
+    setNotesViewMode("edit");
+    setSelectedNoteId(noteId);
+  };
+
+  const handleViewNote = (noteId: string) => {
+    setNotesViewMode("view");
+    setSelectedNoteId(noteId);
+  };
+
+  const handleBackToNotesList = () => {
+    setNotesViewMode("list");
+    setSelectedNoteId(null);
+  };
+
+  const handleNoteSaved = () => {
+    setNotesViewMode("list");
+    setSelectedNoteId(null);
+    toast.success("Note saved successfully!");
+  };
 
   const handleLeaveGroup = async () => {
     if (!user || !group) return;
@@ -136,6 +170,39 @@ export default function GroupDetailPage() {
 
   if (!group) {
     return null;
+  }
+
+  if (activeTab === "notes" && notesViewMode !== "list") {
+    if (notesViewMode === "create") {
+      return (
+        <NoteEditor
+          groupId={groupId}
+          onSave={handleNoteSaved}
+          onCancel={handleBackToNotesList}
+        />
+      );
+    }
+
+    if (notesViewMode === "edit" && selectedNoteId) {
+      return (
+        <NoteEditor
+          groupId={groupId}
+          noteId={selectedNoteId}
+          onSave={handleNoteSaved}
+          onCancel={handleBackToNotesList}
+        />
+      );
+    }
+
+    if (notesViewMode === "view" && selectedNoteId) {
+      return (
+        <NoteViewer
+          noteId={selectedNoteId}
+          onEdit={() => setNotesViewMode("edit")}
+          onBack={handleBackToNotesList}
+        />
+      );
+    }
   }
 
   return (
@@ -282,16 +349,14 @@ export default function GroupDetailPage() {
         )}
 
         {activeTab === "notes" && (
-          <div className="p-4">
-            <div className="text-center py-8">
-              <StickyNote className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Create Notes
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Collaborative notes are coming soon!
-              </p>
-              <Button disabled>Create Note (Coming Soon)</Button>
+          <div className="h-full p-4">
+            <div className="max-w-6xl mx-auto h-full">
+              <NotesList
+                groupId={groupId}
+                onCreateNote={handleCreateNote}
+                onEditNote={handleEditNote}
+                onViewNote={handleViewNote}
+              />
             </div>
           </div>
         )}
