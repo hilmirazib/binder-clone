@@ -180,11 +180,11 @@ export function JoinGroupModal({
               <div className="flex items-center gap-3 mb-3">
                 <Avatar
                   profile={{
-                    display_name: groupPreview.name,
+                    displayName: groupPreview.name,
                     username: null,
-                    avatar_emoji: groupPreview.avatarEmoji,
-                    avatar_color: groupPreview.avatarColor,
-                    avatar_url: null,
+                    avatarEmoji: groupPreview.avatarEmoji,
+                    avatarColor: groupPreview.avatarColor,
+                    avatarUrl: null,
                   }}
                   size="lg"
                 />

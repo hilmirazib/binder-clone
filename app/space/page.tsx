@@ -144,11 +144,11 @@ export default function SpacePage() {
                     <div className="flex items-center gap-3 flex-1">
                       <Avatar
                         profile={{
-                          display_name: group.name,
+                          displayName: group.name,
                           username: null,
-                          avatar_emoji: group.avatarEmoji,
-                          avatar_color: group.avatarColor,
-                          avatar_url: null,
+                          avatarEmoji: group.avatarEmoji,
+                          avatarColor: group.avatarColor,
+                          avatarUrl: null,
                         }}
                         size="lg"
                       />

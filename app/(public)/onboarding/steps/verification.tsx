@@ -36,85 +36,99 @@ export default function VerificationStep() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
-            Choose a verification method
-          </h1>
-          <p className="text-gray-600 leading-relaxed">
-            We'll send you a verification code to make sure it's really you.
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <div className="text-center">
-            <p className="text-sm text-gray-600 mb-6">
-              Send code to:{" "}
-              <span className="font-semibold">{fullPhoneNumber}</span>
+    <div className="min-h-[60vh] bg-slate-50 py-12">
+      <section className="max-w-md mx-auto">
+        {/* Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
+          {/* Header */}
+          <div className="space-y-1">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Choose verification
+            </h1>
+            <p className="text-sm text-slate-500">
+              Send code to{" "}
+              <span className="font-medium text-slate-700">
+                {fullPhoneNumber}
+              </span>
+              .
             </p>
           </div>
 
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md mb-4">
-              {error}
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5">
+              <span className="h-2 w-2 rounded-full bg-red-400" />
+              <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
 
-          <div className="space-y-3">
-            <Button
-              onClick={() => handleMethodSelect("whatsapp")}
-              variant="outline"
-              className="w-full py-4 text-left justify-start h-auto"
-              disabled={isLoading}
-            >
-              <div className="flex items-center w-full">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                  <MessageCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">WhatsApp</div>
-                  <div className="text-sm text-gray-500">
-                    Get code via WhatsApp
-                  </div>
-                </div>
-                <div className="text-gray-400">{">"}</div>
-              </div>
-            </Button>
-
-            <Button
-              onClick={() => handleMethodSelect("sms")}
-              variant="outline"
-              className="w-full py-4 text-left justify-start h-auto"
-              disabled={isLoading}
-            >
-              <div className="flex items-center w-full">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                  <MessageSquare className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">SMS</div>
-                  <div className="text-sm text-gray-500">
-                    Get code via text message
-                  </div>
-                </div>
-                <div className="text-gray-400">{">"}</div>
-              </div>
-            </Button>
+          {/* Divider */}
+          <div className="relative">
+            <div className="h-px bg-slate-200" />
+            <span className="absolute inset-x-0 -top-3 mx-auto w-fit bg-white px-3 text-xs text-slate-400">
+              Choose method
+            </span>
           </div>
 
-          {isLoading && (
-            <div className="text-center">
-              <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin mr-2"></div>
-                <span className="text-sm text-gray-600">
-                  Sending verification code...
+          <div className="space-y-3">
+            <button
+              disabled
+              className="w-full h-14 rounded-xl border border-slate-300 px-4
+                       flex items-center justify-between text-left disabled:opacity-60"
+            >
+              <span className="flex items-center gap-3">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-green-100">
+                  <MessageCircle className="h-4 w-4 text-green-600" />
                 </span>
+                <span className="text-left">
+                  <span className="block text-sm font-medium text-slate-900">
+                    WhatsApp
+                  </span>
+                  <span className="block text-xs text-slate-500">
+                    Coming soon
+                  </span>
+                </span>
+              </span>
+              <span className="text-xs rounded-full bg-slate-100 px-2 py-0.5 text-slate-500">
+                Disabled
+              </span>
+            </button>
+
+            <button
+              onClick={() => handleMethodSelect("sms")}
+              disabled={isLoading}
+              className="w-full h-14 rounded-xl border border-slate-300 px-4
+                       flex items-center justify-between text-left hover:bg-slate-50
+                       disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <span className="flex items-center gap-3">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-100">
+                  <MessageSquare className="h-4 w-4 text-blue-600" />
+                </span>
+                <span className="text-left">
+                  <span className="block text-sm font-medium text-slate-900">
+                    SMS
+                  </span>
+                  <span className="block text-xs text-slate-500">
+                    Get code via text
+                  </span>
+                </span>
+              </span>
+              <span className="text-slate-400">{">"}</span>
+            </button>
+
+            {isLoading && (
+              <div className="text-center text-xs text-slate-500">
+                <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600" />
+                Sending verification code...
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          <p className="text-xs text-slate-400 text-center leading-relaxed">
+            Carrier SMS delivery may take up to a minute.
+          </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

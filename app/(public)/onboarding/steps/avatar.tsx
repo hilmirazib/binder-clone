@@ -76,128 +76,130 @@ export default function AvatarStep() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
-            Add a profile image
-          </h1>
-          <p className="text-gray-600">
-            Take a photo, upload one, or pick an emoji—it's your call! You can
-            always update it later.
-          </p>
-        </div>
-
-        <div className="space-y-6">
-          {/* Avatar Preview */}
-          <div className="flex justify-center">
-            <div
-              className="w-32 h-32 rounded-full border-4 border-purple-200 flex items-center justify-center cursor-pointer hover:border-purple-300 transition-colors"
-              onClick={() => setShowEmojiPicker(true)}
-              style={{ backgroundColor: avatar.color || "#6366F1" }}
-            >
-              {avatar.type === "emoji" && avatar.emoji ? (
-                <span className="text-6xl">{avatar.emoji}</span>
-              ) : (
-                <Plus className="w-8 h-8 text-white" />
-              )}
-            </div>
+    <div className="min-h-[60vh] bg-slate-50 py-12">
+      <section className="max-w-md mx-auto">
+        {/* Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
+          {/* Header */}
+          <div className="space-y-1 text-center">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Add a profile image
+            </h1>
+            <p className="text-sm text-slate-500">
+              Take a photo, upload, or pick an emoji.
+            </p>
           </div>
 
+          {/* Preview */}
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={() => setShowEmojiPicker(true)}
+              className="h-28 w-28 rounded-full border-4 border-violet-200 shadow-inner"
+              style={{ backgroundColor: avatar.color || "#6366F1" }}
+              aria-label="Choose emoji"
+            >
+              {avatar.type === "emoji" && avatar.emoji ? (
+                <span className="text-5xl leading-none">{avatar.emoji}</span>
+              ) : (
+                <Plus className="mx-auto h-6 w-6 text-white" />
+              )}
+            </button>
+          </div>
+
+          {/* Error chip (konsisten) */}
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
-              {error}
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 mx-auto">
+              <span className="h-2 w-2 rounded-full bg-red-400" />
+              <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
 
+          {/* Divider */}
+          <div className="relative">
+            <div className="h-px bg-slate-200" />
+            <span className="absolute inset-x-0 -top-3 mx-auto w-fit bg-white px-3 text-xs text-slate-400">
+              Choose method
+            </span>
+          </div>
+
           {/* Options */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <Button
+              variant="outline"
               onClick={() => setShowEmojiPicker(true)}
-              variant="outline"
-              className="w-full py-4 text-left justify-start h-auto"
+              className="h-12 w-full justify-start rounded-xl"
             >
-              <div className="flex items-center w-full">
-                <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-xl">😊</span>
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">Use emoji</div>
-                  <div className="text-sm text-gray-500">
-                    Pick an emoji with background color
-                  </div>
-                </div>
-              </div>
+              <span className="mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-yellow-100">
+                😊
+              </span>
+              <span className="text-sm">Use emoji</span>
             </Button>
 
             <Button
-              onClick={() => setShowImageOptions(true)}
               variant="outline"
-              className="w-full py-4 text-left justify-start h-auto"
+              onClick={() => setShowImageOptions(true)}
+              disabled
+              className="h-12 w-full justify-start rounded-xl disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <div className="flex items-center w-full">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                  <Image className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">
-                    Choose from gallery
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    Upload a photo from your device
-                  </div>
-                </div>
-              </div>
+              <span className="mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                <Image className="h-4 w-4 text-blue-600" />
+              </span>
+              <span className="text-sm">Choose from gallery</span>
             </Button>
 
             <Button
-              onClick={() => setShowImageOptions(true)}
               variant="outline"
-              className="w-full py-4 text-left justify-start h-auto"
+              onClick={() => setShowImageOptions(true)}
+              disabled
+              className="h-12 w-full justify-start rounded-xl disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <div className="flex items-center w-full">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                  <Camera className="w-5 h-5 text-green-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900">Take a photo</div>
-                  <div className="text-sm text-gray-500">
-                    Use your camera to take a new photo
-                  </div>
-                </div>
-              </div>
+              <span className="mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-100">
+                <Camera className="h-4 w-4 text-green-600" />
+              </span>
+              <span className="text-sm">Take a photo</span>
             </Button>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="space-y-3">
-          <Button
-            onClick={handleComplete}
-            className="w-full py-3"
-            disabled={isLoading}
-            size="lg"
-          >
-            {isLoading ? (
-              <div className="flex items-center">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Setting up your profile...
-              </div>
-            ) : (
-              "Choose Image"
-            )}
-          </Button>
+          {/* Divider + Actions */}
+          <div className="relative">
+            <div className="h-px bg-slate-200" />
+            <span className="absolute inset-x-0 -top-3 mx-auto w-fit bg-white px-3 text-xs text-slate-400">
+              Continue
+            </span>
+          </div>
 
-          <Button
-            variant="ghost"
-            onClick={handleSkip}
-            className="w-full"
-            disabled={isLoading}
-          >
-            Skip
-          </Button>
+          <div className="grid gap-2">
+            <Button
+              onClick={handleComplete}
+              disabled={isLoading}
+              className="h-11 w-full rounded-full bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-60"
+            >
+              {isLoading ? (
+                <span className="inline-flex items-center">
+                  <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Saving...
+                </span>
+              ) : (
+                "Choose Image"
+              )}
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={handleSkip}
+              disabled={isLoading}
+              className="h-11 w-full rounded-full text-sm disabled:opacity-60"
+            >
+              Skip
+            </Button>
+
+            <p className="text-center text-xs text-slate-500">
+              Recommended: square image, min 400×400px.
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Emoji Picker Modal */}
       <EmojiPicker
@@ -208,30 +210,26 @@ export default function AvatarStep() {
         selectedColor={avatar.color || "#6366F1"}
       />
 
-      {/* Image Options Modal (placeholder) */}
+      {/* Sheet placeholder (opsi lain nonaktif) */}
       {showImageOptions && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-center z-50">
-          <div className="bg-white rounded-t-lg w-full max-w-sm p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-center">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-end justify-center">
+          <div className="bg-white w-full max-w-md rounded-t-2xl p-6 space-y-3">
+            <h3 className="text-center text-base font-semibold">
               Choose Space Image
             </h3>
-
-            <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
-                😊 Use emoji
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                📷 Choose from gallery
-              </Button>
-              <Button variant="outline" className="w-full justify-start">
-                📸 Take a photo
-              </Button>
-            </div>
-
+            <Button variant="outline" className="w-full justify-start" disabled>
+              😊 Use emoji
+            </Button>
+            <Button variant="outline" className="w-full justify-start" disabled>
+              📷 Choose from gallery
+            </Button>
+            <Button variant="outline" className="w-full justify-start" disabled>
+              📸 Take a photo
+            </Button>
             <Button
               variant="ghost"
-              onClick={() => setShowImageOptions(false)}
               className="w-full"
+              onClick={() => setShowImageOptions(false)}
             >
               Cancel
             </Button>

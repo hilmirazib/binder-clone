@@ -23,7 +23,7 @@ export default function SplashPage() {
             .eq("userId", user.id)
             .single();
 
-          if (profile && profile.display_name && profile.username) {
+          if (profile && profile.displayName && profile.username) {
             router.push("/space");
           } else {
             router.push("/onboarding");

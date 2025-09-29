@@ -96,11 +96,11 @@ export function CreateGroupModal({
             <div className="relative inline-block">
               <Avatar
                 profile={{
-                  display_name: form.watch("name") || "New Group",
+                  displayName: form.watch("name") || "New Group",
                   username: null,
-                  avatar_emoji: form.watch("avatarEmoji"),
-                  avatar_color: form.watch("avatarColor"),
-                  avatar_url: null,
+                  avatarEmoji: form.watch("avatarEmoji"),
+                  avatarColor: form.watch("avatarColor"),
+                  avatarUrl: null,
                 }}
                 size="xl"
                 className="cursor-pointer hover:opacity-80 transition-opacity"

@@ -75,7 +75,7 @@ export default function ProfileStep() {
       // Validate form data
       const validation = profileSchema.safeParse(formData);
       if (!validation.success) {
-        throw new Error(validation.error.errors[0].message);
+        throw new Error(validation.error.issues[0].message);
       }
 
       if (usernameStatus !== "available") {
@@ -100,142 +100,153 @@ export default function ProfileStep() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
-            Let's get you set up!
-          </h1>
-        </div>
-
-        <div className="space-y-4">
-          {/* Name Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Name *
-            </label>
-            <Input
-              type="text"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
-              placeholder="Your full name"
-              maxLength={50}
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Letters only, no emoji or symbols
-            </p>
+    <div className="min-h-[60vh] bg-slate-50 py-12">
+      <section className="max-w-md mx-auto">
+        {/* Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
+          {/* Header */}
+          <div className="space-y-1">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Set up your profile
+            </h1>
+            <p className="text-sm text-slate-500">Tell us a bit about you.</p>
           </div>
 
-          {/* Username Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Username *
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <span className="text-gray-500 text-sm">@</span>
-              </div>
+          {/* Fields */}
+          <div className="space-y-4">
+            {/* Name */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">
+                Name *
+              </label>
               <Input
-                type="text"
-                value={formData.username}
+                value={formData.name}
                 onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    username: e.target.value
-                      .toLowerCase()
-                      .replace(/[^a-z0-9_]/g, ""),
-                  }))
+                  setFormData((p) => ({ ...p, name: e.target.value }))
                 }
-                placeholder="your.username"
-                className="pl-8"
-                maxLength={20}
+                placeholder="Your full name"
+                className="h-11 rounded-xl border-slate-300 px-4 focus-visible:ring-2 focus-visible:ring-slate-300"
               />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                {usernameStatus === "checking" && (
-                  <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
-                )}
-                {usernameStatus === "available" && (
-                  <Check className="w-4 h-4 text-green-500" />
-                )}
-                {usernameStatus === "taken" && (
-                  <X className="w-4 h-4 text-red-500" />
-                )}
-              </div>
+              <p className="text-[11px] text-slate-500">
+                Letters only, no emoji or symbols.
+              </p>
             </div>
 
-            {/* Username suggestions */}
-            {usernameOptions.length > 0 && (
-              <div className="mt-2">
-                <p className="text-xs text-gray-600 mb-2">
-                  Suggested usernames:
-                </p>
-                <div className="flex flex-wrap gap-1">
-                  {usernameOptions.map((option) => (
-                    <Badge
-                      key={option}
-                      variant="secondary"
-                      className="cursor-pointer hover:bg-gray-200"
-                      onClick={() => handleUsernameSelect(option)}
+            {/* Username */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">
+                Username *
+              </label>
+              <div className="relative">
+                <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-sm">
+                  @
+                </span>
+                <Input
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p,
+                      username: e.target.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9_]/g, ""),
+                    }))
+                  }
+                  placeholder="your.username"
+                  className="h-11 rounded-xl border-slate-300 pl-8 pr-9 focus-visible:ring-2 focus-visible:ring-slate-300"
+                />
+                <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  {usernameStatus === "checking" && (
+                    <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
+                  )}
+                  {usernameStatus === "available" && (
+                    <Check className="h-4 w-4 text-green-600" />
+                  )}
+                  {usernameStatus === "taken" && (
+                    <X className="h-4 w-4 text-red-500" />
+                  )}
+                </span>
+              </div>
+
+              {usernameOptions.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {usernameOptions.map((u) => (
+                    <button
+                      key={u}
+                      type="button"
+                      onClick={() => handleUsernameSelect(u)}
+                      className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs text-slate-700 hover:bg-slate-100"
                     >
-                      {option}
-                    </Badge>
+                      {u}
+                    </button>
                   ))}
                 </div>
+              )}
+              <p className="text-[11px] text-slate-500">
+                You can change it once every 7 days.
+              </p>
+            </div>
+
+            {/* Email */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">
+                Email *
+              </label>
+              <Input
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, email: e.target.value }))
+                }
+                placeholder="you@domain.com"
+                className="h-11 rounded-xl border-slate-300 px-4 focus-visible:ring-2 focus-visible:ring-slate-300"
+              />
+            </div>
+
+            {/* Error chip (seragam dengan Welcome/Login) */}
+            {error && (
+              <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5">
+                <span className="h-2 w-2 rounded-full bg-red-400" />
+                <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
+          </div>
 
-            <p className="text-xs text-gray-500 mt-1">
-              Used for tagging and adding friends. You can only change it once
-              every 7 days.
+          {/* Divider */}
+          <div className="relative">
+            <div className="h-px bg-slate-200" />
+            <span className="absolute inset-x-0 -top-3 mx-auto w-fit bg-white px-3 text-xs text-slate-400">
+              Continue
+            </span>
+          </div>
+
+          {/* Actions */}
+          <div className="space-y-2">
+            <Button
+              onClick={handleContinue}
+              disabled={
+                !formData.name ||
+                !formData.username ||
+                !formData.email ||
+                isLoading ||
+                usernameStatus !== "available"
+              }
+              className="h-11 w-full rounded-full bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-60"
+            >
+              {isLoading ? (
+                <span className="inline-flex items-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Setting up...
+                </span>
+              ) : (
+                "Continue"
+              )}
+            </Button>
+            <p className="text-center text-[11px] text-slate-500">
+              Make sure all fields are valid before continuing.
             </p>
           </div>
-
-          {/* Email Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Email *
-            </label>
-            <Input
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              placeholder="youremail@domain.com"
-            />
-          </div>
-
-          {error && (
-            <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
-              {error}
-            </div>
-          )}
         </div>
-
-        <Button
-          onClick={handleContinue}
-          className="w-full py-3"
-          disabled={
-            !formData.name ||
-            !formData.username ||
-            !formData.email ||
-            isLoading ||
-            usernameStatus !== "available"
-          }
-          size="lg"
-        >
-          {isLoading ? (
-            <div className="flex items-center">
-              <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              Setting up...
-            </div>
-          ) : (
-            "Continue"
-          )}
-        </Button>
-      </div>
+      </section>
     </div>
   );
 }

@@ -45,7 +45,10 @@ export default function OTPStep() {
     const validation = otpSchema.safeParse({ code: otpCode });
 
     if (!validation.success) {
-      setError(validation.error.errors[0].message);
+      setError(
+        validation.error?.issues?.[0]?.message ||
+          "An unknown validation error occurred.",
+      );
       return;
     }
 
@@ -93,89 +96,95 @@ export default function OTPStep() {
   }, [otpCode]);
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 py-8">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">
-            Enter the code
-          </h1>
-          <p className="text-gray-600 leading-relaxed">
-            We just texted you at{" "}
-            <span className="font-semibold">{fullPhoneNumber}</span> via{" "}
-            {verificationMethod === "whatsapp" ? "WhatsApp" : "SMS"}. It may
-            take a few minutes to get it.
-          </p>
-        </div>
+    <div className="min-h-[60vh] bg-slate-50 py-12">
+      <section className="max-w-md mx-auto">
+        {/* Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
+          {/* Header */}
+          <div className="space-y-1 text-center">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Enter the code
+            </h1>
+            <p className="text-sm text-slate-500">
+              We sent a code to{" "}
+              <span className="font-medium text-slate-700">
+                {fullPhoneNumber}
+              </span>{" "}
+              via {verificationMethod === "whatsapp" ? "WhatsApp" : "SMS"}.
+            </p>
+          </div>
 
-        <div className="space-y-6">
-          <OTPInput
-            value={otpCode}
-            onChange={setOTPCode}
-            length={6}
-            error={!!error}
-          />
+          {/* OTP inputs */}
+          <div className="mx-auto w-full max-w-[320px]">
+            <OTPInput
+              value={otpCode}
+              onChange={setOTPCode}
+              length={6}
+              error={!!error}
+            />
+          </div>
 
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md text-center">
-              <div className="flex items-center justify-center mb-1">
-                <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
-                Oops! Wrong code.
-              </div>
-              <div className="text-xs">{error}</div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 mx-auto">
+              <span className="h-2 w-2 rounded-full bg-red-400" />
+              <p className="text-sm text-red-700">Oops! {error}</p>
             </div>
           )}
 
-          {isLoading && (
-            <div className="text-center">
-              <div className="flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin mr-2"></div>
-                <span className="text-sm text-gray-600">Verifying code...</span>
-              </div>
-            </div>
-          )}
-        </div>
+          {/* Divider tipis */}
+          <div className="relative">
+            <div className="h-px bg-slate-200" />
+            <span className="absolute inset-x-0 -top-3 mx-auto w-fit bg-white px-3 text-xs text-slate-400">
+              Help
+            </span>
+          </div>
 
-        <div className="text-center space-y-3">
-          <p className="text-sm text-gray-600">Didn't get the code?</p>
+          {/* Actions/help */}
+          <div className="space-y-3">
+            <p className="text-center text-xs text-slate-500">
+              Didn't get the code?
+            </p>
 
-          <div className="space-y-2">
-            {canResend ? (
-              <div className="space-y-2">
-                <Button
-                  variant="ghost"
+            <div className="flex items-center justify-between text-xs">
+              {canResend ? (
+                <button
                   onClick={handleResend}
                   disabled={isLoading}
+                  className="font-medium text-blue-600 hover:underline disabled:opacity-60"
                 >
                   Resend via{" "}
                   {verificationMethod === "whatsapp" ? "WhatsApp" : "SMS"}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  onClick={previousStep}
-                  disabled={isLoading}
-                >
-                  Change verification method
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <p className="text-sm text-gray-500">
+                </button>
+              ) : (
+                <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-slate-600">
+                  <span className="h-2 w-2 rounded-full bg-slate-400" />
                   Resend available in {countdown}s
-                </p>
+                </span>
+              )}
 
-                <Button
-                  variant="ghost"
-                  onClick={previousStep}
-                  disabled={isLoading}
-                >
-                  Change verification method
-                </Button>
+              <button
+                onClick={previousStep}
+                disabled={isLoading}
+                className="text-slate-600 hover:underline disabled:opacity-60"
+              >
+                Change verification method
+              </button>
+            </div>
+
+            {isLoading && (
+              <div className="text-center text-xs text-slate-500">
+                <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-200 border-top-color-transparent" />
+                Verifying code...
               </div>
             )}
           </div>
+
+          {/* Footer note */}
+          <p className="text-xs text-slate-400 text-center leading-relaxed">
+            It can take up to a minute for the SMS to arrive.
+          </p>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

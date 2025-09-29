@@ -71,10 +71,10 @@ async function seedProduction() {
           email_confirm: true,
           phone_confirm: true,
           user_metadata: {
-            display_name: userData.profile.displayName,
+            displayName: userData.profile.displayName,
             username: userData.profile.username,
-            avatar_emoji: userData.profile.avatarEmoji,
-            avatar_color: userData.profile.avatarColor,
+            avatarEmoji: userData.profile.avatarEmoji,
+            avatarColor: userData.profile.avatarColor,
           },
         });
 
