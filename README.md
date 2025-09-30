@@ -186,6 +186,35 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ### **Project Structure**
 
+### **4. Database Setup**
+
+```bash
+# Generate Prisma client
+pnpm prisma generate
+
+# Run database migrations
+pnpm prisma migrate dev
+
+# Seed database dengan demo data
+npx prisma db seed
+```
+
+**🌱 Seeder akan create:**
+
+- 3 demo groups dengan sample messages
+- Sample notes dengan block-based content
+- Invite codes untuk testing: `DEMO2025`, `TEAM2025`
+
+### **5. Start Development**
+
+```bash
+pnpm dev
+```
+
+Buka [http://localhost:3000](http://localhost:3000)
+
+---
+
 ```
 binder-clone/
 ├── app/                    # Next.js App Router
