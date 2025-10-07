@@ -84,6 +84,9 @@ export function JoinGroupModal({
     try {
       const joinedGroup = await GroupService.joinGroupByInvite(data.inviteCode);
 
+      // Close modal first
+      onClose();
+
       // Get full group data after joining
       const fullGroupData = await GroupService.getGroupById(joinedGroup.id);
       if (fullGroupData) {
@@ -91,7 +94,6 @@ export function JoinGroupModal({
       }
 
       form.reset();
-      onClose();
     } catch (error) {
       console.error("Failed to join group:", error);
       toast.error(

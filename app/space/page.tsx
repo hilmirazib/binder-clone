@@ -75,7 +75,10 @@ export default function SpacePage() {
       avatarColor: joinedGroup.avatarColor || undefined,
       inviteCode: joinedGroup.inviteCode,
       ownerId: joinedGroup.ownerId,
-      createdAt: joinedGroup.createdAt.toISOString(),
+      createdAt:
+        joinedGroup.createdAt instanceof Date
+          ? joinedGroup.createdAt.toISOString()
+          : joinedGroup.createdAt,
       memberCount: joinedGroup._count.members,
     };
     setGroups((prev) => [simpleGroup, ...prev]);
