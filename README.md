@@ -1,5 +1,16 @@
 ## ✨ **Live Demo & Screenshots**
 
+🚀 **Live Application**: https://binder-clone.vercel.app/
+📹 **Demo Video**: https://drive.google.com/drive/folders/1Q5qynuqybgBAOfBBM-b3tDbUyVhqMqJu?usp=sharing
+
+### 🧪 **Test Account for Immediate Access**
+
+**Phone**: `628978663783`  
+**OTP Code**: `123456`  
+**Valid Until**: October 8, 2025 (extendable)
+
+> **⚡ Quick Start**: Visit the live app, enter the phone number above, use OTP `123456`, and start exploring all features immediately!
+
 ### 📱 **Mobile-First Experience**
 
 **🎯 Authentication Flow**
