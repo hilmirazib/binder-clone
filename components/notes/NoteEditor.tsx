@@ -34,7 +34,6 @@ export function NoteEditor({
     Omit<NoteBlock, "id" | "noteId" | "createdAt" | "updatedAt">[]
   >([{ order: 0, type: "text", content: { text: "" } }]);
   const [status, setStatus] = useState<"draft" | "published">("draft");
-  const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingNote, setIsLoadingNote] = useState(!!noteId);
 
@@ -78,7 +77,7 @@ export function NoteEditor({
     setIsSaving(true);
     try {
       const saveData = {
-        title: title.trim() || null,
+        title: title.trim() || undefined,
         status: publishImmediately ? ("published" as const) : status,
         blocks: blocks.filter((block) => {
           // Filter out empty blocks

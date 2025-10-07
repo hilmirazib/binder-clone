@@ -66,7 +66,7 @@ export function JoinGroupModal({
         const preview = await GroupService.getInviteInfo(debouncedInviteCode);
         setGroupPreview(preview);
       } catch (error) {
-        setPreviewError("Invalid invite code");
+        setPreviewError("Invalid invite code" + error);
         setGroupPreview(null);
       } finally {
         setIsPreviewLoading(false);
@@ -82,16 +82,10 @@ export function JoinGroupModal({
     setIsLoading(true);
 
     try {
-      const joinedGroup = await GroupService.joinGroupByInvite(
-        data.inviteCode,
-        user.id,
-      );
+      const joinedGroup = await GroupService.joinGroupByInvite(data.inviteCode);
 
       // Get full group data after joining
-      const fullGroupData = await GroupService.getGroupById(
-        joinedGroup.id,
-        user.id,
-      );
+      const fullGroupData = await GroupService.getGroupById(joinedGroup.id);
       if (fullGroupData) {
         onGroupJoined(fullGroupData);
       }

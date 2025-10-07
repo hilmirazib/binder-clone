@@ -1,16 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useOnboardingStore } from "@/lib/onboarding-store";
 import { completeOnboarding } from "@/lib/auth-helpers";
 import { EmojiPicker } from "@/components/onboarding/EmojiPicker";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import { Plus, Camera, Image } from "lucide-react";
+import { Plus, Camera } from "lucide-react";
 
 export default function AvatarStep() {
-  const router = useRouter();
   const {
     phoneNumber,
     countryCode,
@@ -24,7 +22,6 @@ export default function AvatarStep() {
     setError,
     isLoading,
     error,
-    resetOnboarding,
   } = useOnboardingStore();
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -71,9 +68,9 @@ export default function AvatarStep() {
     setAvatar({ type: "emoji", emoji, color });
   };
 
-  const handleImageUpload = (file: File) => {
-    setShowImageOptions(false);
-  };
+  // const handleImageUpload = (file: File) => {
+  //   setShowImageOptions(false);
+  // };
 
   return (
     <div className="min-h-[60vh] bg-slate-50 py-12">
@@ -143,7 +140,7 @@ export default function AvatarStep() {
               className="h-12 w-full justify-start rounded-xl disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <span className="mr-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
-                <Image className="h-4 w-4 text-blue-600" />
+                {/* <Image className="h-4 w-4 text-blue-600" /> */}
               </span>
               <span className="text-sm">Choose from gallery</span>
             </Button>

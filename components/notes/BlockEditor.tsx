@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, KeyboardEvent } from "react";
+import React, { useState, KeyboardEvent } from "react";
 import {
   Plus,
   Type,
@@ -402,21 +402,17 @@ function BlockRenderer({
 }) {
   switch (block.type) {
     case "heading":
-      const HeadingTag =
-        `h${block.content.level || 1}` as keyof JSX.IntrinsicElements;
-      return (
-        <HeadingTag
-          className={`font-bold ${
-            block.content.level === 1
-              ? "text-2xl"
-              : block.content.level === 2
-                ? "text-xl"
-                : "text-lg"
-          }`}
-        >
-          {block.content.text || ""}
-        </HeadingTag>
-      );
+      const level = block.content.level || 1;
+      const className = `font-bold ${
+        level === 1 ? "text-2xl" : level === 2 ? "text-xl" : "text-lg"
+      }`;
+      if (level === 1) {
+        return <h1 className={className}>{block.content.text || ""}</h1>;
+      } else if (level === 2) {
+        return <h2 className={className}>{block.content.text || ""}</h2>;
+      } else {
+        return <h3 className={className}>{block.content.text || ""}</h3>;
+      }
 
     case "text":
       return (

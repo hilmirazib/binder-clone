@@ -7,7 +7,6 @@ import {
   Edit3,
   Share2,
   Clock,
-  User,
   FileText,
   Loader2,
 } from "lucide-react";

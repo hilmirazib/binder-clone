@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { ArrowUp, Loader2, MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Avatar } from "@/components/ui/Avatar";
 import { MessageItem } from "./MessageItem";
 import { TypingIndicator } from "./TypingIndicator";
 import { ChatInput } from "./ChatInput";
@@ -19,7 +18,7 @@ interface ChatRoomProps {
   groupName: string;
 }
 
-export function ChatRoom({ groupId, groupName }: ChatRoomProps) {
+export function ChatRoom({ groupId }: ChatRoomProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
 
@@ -138,7 +137,7 @@ export function ChatRoom({ groupId, groupName }: ChatRoomProps) {
         {/* Messages */}
         {groupedMessages.length > 0 ? (
           <div className="space-y-2">
-            {groupedMessages.map((message, index) => (
+            {groupedMessages.map((message) => (
               <MessageItem
                 key={message.id}
                 message={message}

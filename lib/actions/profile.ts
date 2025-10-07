@@ -14,7 +14,7 @@ function slugBase(input: string) {
 }
 
 export async function ensureProfile() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -52,7 +52,7 @@ const ProfileSchema = z.object({
 });
 
 export async function setProfile(input: z.infer<typeof ProfileSchema>) {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   const {
     data: { user },
   } = await supabase.auth.getUser();

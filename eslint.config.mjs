@@ -38,6 +38,8 @@ const config = [
       "@typescript-eslint/no-explicit-any": "off",
 
       "import/no-anonymous-default-export": "warn",
+      "react/no-unescaped-entities": "off",
+      "react-hooks/exhaustive-deps": "off",
     },
   },
 

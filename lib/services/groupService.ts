@@ -110,7 +110,11 @@ export class GroupService {
 
       // Transform the data
       const transformedGroups =
-        groups?.map((item) => item.Group).filter(Boolean) || [];
+        groups
+          ?.map((item) =>
+            Array.isArray(item.Group) ? item.Group[0] : item.Group,
+          )
+          .filter(Boolean) || [];
 
       return transformedGroups;
     } catch (error) {
@@ -154,7 +158,15 @@ export class GroupService {
         avatarColor,
         inviteCode,
         ownerId,
-        createdAt
+        isPublic,
+        createdAt,
+        owner:Profile!Group_ownerId_fkey(
+          userId,
+          displayName,
+          username,
+          avatarEmoji,
+          avatarColor
+        )
       `,
         )
         .eq("id", groupId)
@@ -167,10 +179,11 @@ export class GroupService {
         .from("GroupMember")
         .select(
           `
+        groupId,   
         userId,
         role,
         joinedAt,
-        user:Profile(
+        user:Profile!GroupMember_userId_fkey(
           userId,
           displayName,
           username,
@@ -197,21 +210,34 @@ export class GroupService {
         .eq("groupId", groupId);
 
       // Try to get notes count, but handle error gracefully
+      // Count only published notes + own drafts (same as getGroupNotes)
       let notesCount = 0;
       try {
         const { count } = await supabase
           .from("Note")
           .select("*", { count: "exact", head: true })
-          .eq("groupId", groupId);
+          .eq("groupId", groupId)
+          .or(`status.eq.published,authorId.eq.${user.id}`);
         notesCount = count || 0;
       } catch (noteError) {
         console.warn("Could not fetch notes count:", noteError);
         // Continue without notes count
       }
 
-      return {
+      // Ensure user and owner are objects, not arrays (Supabase sometimes returns arrays for relations)
+      const processedMembers = (members || []).map((member) => ({
+        ...member,
+        user: Array.isArray(member.user) ? member.user[0] : member.user,
+      }));
+
+      const processedGroup = {
         ...group,
-        members: members || [],
+        owner: Array.isArray(group.owner) ? group.owner[0] : group.owner,
+      };
+
+      return {
+        ...processedGroup,
+        members: processedMembers,
         _count: {
           members: membersCount || 0,
           messages: messagesCount || 0,
@@ -374,8 +400,14 @@ export class GroupService {
         .select("*", { count: "exact", head: true })
         .eq("groupId", group.id);
 
-      return {
+      // Ensure owner is an object, not array
+      const processedGroup = {
         ...group,
+        owner: Array.isArray(group.owner) ? group.owner[0] : group.owner,
+      };
+
+      return {
+        ...processedGroup,
         _count: {
           members: memberCount || 0,
         },

@@ -30,7 +30,7 @@ const createGroupSchema = z.object({
   description: z.string().max(200, "Description too long").optional(),
   avatarEmoji: z.string().optional(),
   avatarColor: z.string().optional(),
-  isPublic: z.boolean().optional().default(false),
+  isPublic: z.boolean().optional(),
 });
 
 type CreateGroupForm = z.infer<typeof createGroupSchema>;
@@ -98,13 +98,12 @@ export function CreateGroupModal({
                 profile={{
                   displayName: form.watch("name") || "New Group",
                   username: null,
-                  avatarEmoji: form.watch("avatarEmoji"),
-                  avatarColor: form.watch("avatarColor"),
+                  avatarEmoji: form.watch("avatarEmoji") || null,
+                  avatarColor: form.watch("avatarColor") || null,
                   avatarUrl: null,
                 }}
                 size="xl"
                 className="cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => setShowEmojiPicker(true)}
               />
               <button
                 type="button"

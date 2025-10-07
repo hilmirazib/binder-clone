@@ -122,12 +122,14 @@ export class NoteService {
 
         return {
           ...note,
+          author: Array.isArray(note.author) ? note.author[0] : note.author,
           blocks: blocks || [],
         } as Note;
       }
 
       return {
         ...note,
+        author: Array.isArray(note.author) ? note.author[0] : note.author,
         blocks: [],
       } as Note;
     } catch (error) {
@@ -197,6 +199,7 @@ export class NoteService {
 
       return {
         ...note,
+        author: Array.isArray(note.author) ? note.author[0] : note.author,
         blocks: blocks || [],
       } as Note;
     } catch (error) {
@@ -288,6 +291,7 @@ export class NoteService {
 
           return {
             ...note,
+            author: Array.isArray(note.author) ? note.author[0] : note.author,
             blocks: blocks || [],
           } as Note;
         }
@@ -304,6 +308,7 @@ export class NoteService {
 
       return {
         ...note,
+        author: Array.isArray(note.author) ? note.author[0] : note.author,
         blocks: blocks || [],
       } as Note;
     } catch (error) {
@@ -406,6 +411,7 @@ export class NoteService {
 
           return {
             ...note,
+            author: Array.isArray(note.author) ? note.author[0] : note.author,
             blocks: [],
             blockCount: count || 0,
           };
@@ -435,7 +441,7 @@ export class NoteService {
           table: "Note",
           filter: `id=eq.${noteId}`,
         },
-        async (payload) => {
+        async () => {
           try {
             const updatedNote = await this.getNoteById(noteId);
             onUpdate(updatedNote);
@@ -453,7 +459,7 @@ export class NoteService {
           table: "NoteBlock",
           filter: `noteId=eq.${noteId}`,
         },
-        async (payload) => {
+        async () => {
           try {
             const updatedNote = await this.getNoteById(noteId);
             onUpdate(updatedNote);
@@ -488,7 +494,7 @@ export class NoteService {
           table: "Note",
           filter: `groupId=eq.${groupId}`,
         },
-        async (payload) => {
+        async () => {
           try {
             const updatedNotes = await this.getGroupNotes(groupId);
             onUpdate(updatedNotes);

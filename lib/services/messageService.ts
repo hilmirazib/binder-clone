@@ -68,7 +68,15 @@ export class MessageService {
 
       if (messageError) throw messageError;
 
-      return message as Message;
+      // Ensure author is an object, not array
+      const processedMessage = {
+        ...message,
+        author: Array.isArray(message.author)
+          ? message.author[0]
+          : message.author,
+      };
+
+      return processedMessage as Message;
     } catch (error) {
       console.error("Failed to send message:", error);
       throw error;
@@ -145,16 +153,20 @@ export class MessageService {
 
       if (error) throw error;
 
-      const messageList = (messages || []) as Message[];
-      const hasMore = messageList.length > limit;
+      const processedMessages = (messages || []).map((msg) => ({
+        ...msg,
+        author: Array.isArray(msg.author) ? msg.author[0] : msg.author,
+      })) as Message[];
+
+      const hasMore = processedMessages.length > limit;
 
       if (hasMore) {
-        messageList.pop(); // Remove the extra message
+        processedMessages.pop(); // Remove the extra message
       }
 
       // Return in chronological order (oldest first for display)
       return {
-        messages: messageList.reverse(),
+        messages: processedMessages.reverse(),
         hasMore,
       };
     } catch (error) {
@@ -204,7 +216,12 @@ export class MessageService {
               .single();
 
             if (error) throw error;
-            onNewMessage(fullMessage as Message);
+            onNewMessage({
+              ...fullMessage,
+              author: Array.isArray(fullMessage.author)
+                ? fullMessage.author[0]
+                : fullMessage.author,
+            } as Message);
           } catch (error) {
             console.error("Failed to process new message:", error);
             onError?.(error as Error);

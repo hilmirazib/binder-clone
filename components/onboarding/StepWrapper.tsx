@@ -13,7 +13,6 @@ interface StepWrapperProps {
 export function StepWrapper({
   currentStep,
   totalSteps,
-  title,
   canGoBack,
   onBack,
   children,

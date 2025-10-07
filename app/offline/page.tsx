@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Wifi, RefreshCw, Home, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";

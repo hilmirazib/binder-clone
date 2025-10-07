@@ -55,8 +55,18 @@ export function useMessages({
 
       setSending(true);
       try {
-        await MessageService.sendMessage(groupId, content.trim());
-        // Message will be added via real-time subscription
+        const newMessage = await MessageService.sendMessage(
+          groupId,
+          content.trim(),
+        );
+        // Add message immediately to avoid waiting for real-time subscription
+        setMessages((prev) => {
+          // Avoid duplicates
+          if (prev.some((msg) => msg.id === newMessage.id)) {
+            return prev;
+          }
+          return [...prev, newMessage];
+        });
       } catch (error) {
         console.error("Failed to send message:", error);
         toast.error("Failed to send message");

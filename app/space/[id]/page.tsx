@@ -71,7 +71,7 @@ export default function GroupDetailPage() {
       if (!user || !groupId) return;
 
       try {
-        const groupData = await GroupService.getGroupById(groupId, user.id);
+        const groupData = await GroupService.getGroupById(groupId);
         if (!groupData) {
           toast.error("Group not found or you do not have access");
           router.push("/space");
@@ -122,7 +122,7 @@ export default function GroupDetailPage() {
     setIsLeavingGroup(true);
 
     try {
-      await GroupService.leaveGroup(group.id, user.id);
+      await GroupService.leaveGroup(group.id);
       toast.success("Left group successfully");
       router.push("/space");
     } catch (error) {
@@ -143,7 +143,7 @@ export default function GroupDetailPage() {
       toast.success("Invite code copied!");
       setTimeout(() => setCopiedInvite(false), 2000);
     } catch (error) {
-      toast.error("Failed to copy invite code");
+      toast.error("Failed to copy invite code" + (error as string) || "");
     }
   };
 

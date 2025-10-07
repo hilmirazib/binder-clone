@@ -1,7 +1,6 @@
 "use client";
 
 import { useOnboardingStore } from "@/lib/onboarding-store";
-import { Button } from "@/components/ui/button";
 import { MessageCircle, MessageSquare } from "lucide-react";
 import { sendPhoneOTP } from "@/lib/auth-helpers";
 

@@ -116,7 +116,7 @@ export default function YouPage() {
         {/* Profile Section */}
         <div className="bg-white mx-4 mt-4 rounded-lg p-6 shadow-sm">
           <div className="flex items-center gap-4">
-            <Avatar profile={profile} size="xl" showBorder />
+            <Avatar profile={profile || undefined} size="xl" showBorder />
             <div className="flex-1 min-w-0">
               <h2 className="text-lg font-semibold text-gray-900 truncate">
                 {profile?.displayName || user?.email || "No name"}

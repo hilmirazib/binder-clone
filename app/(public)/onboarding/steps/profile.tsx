@@ -9,7 +9,6 @@ import {
 import { profileSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Check, X, Loader2 } from "lucide-react";
 
 export default function ProfileStep() {

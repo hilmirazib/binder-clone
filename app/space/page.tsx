@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Users, MessageCircle, StickyNote, Loader2 } from "lucide-react";
+import { Plus, Users, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { JoinGroupModal } from "@/components/groups/JoinGroupModal";
 
 import { GroupService } from "@/lib/services/groupService";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { GroupWithMembers } from "@/lib/types/group";
 
 interface SimpleGroup {
   id: string;
@@ -65,10 +66,21 @@ export default function SpacePage() {
     router.push(`/space/${newGroup.id}`);
   };
 
-  const handleGroupJoined = (joinedGroup: SimpleGroup) => {
-    setGroups((prev) => [joinedGroup, ...prev]);
+  const handleGroupJoined = (joinedGroup: GroupWithMembers) => {
+    const simpleGroup: SimpleGroup = {
+      id: joinedGroup.id,
+      name: joinedGroup.name,
+      description: joinedGroup.description || undefined,
+      avatarEmoji: joinedGroup.avatarEmoji || undefined,
+      avatarColor: joinedGroup.avatarColor || undefined,
+      inviteCode: joinedGroup.inviteCode,
+      ownerId: joinedGroup.ownerId,
+      createdAt: joinedGroup.createdAt.toISOString(),
+      memberCount: joinedGroup._count.members,
+    };
+    setGroups((prev) => [simpleGroup, ...prev]);
     setShowJoinModal(false);
-    router.push(`/space/${joinedGroup.id}`);
+    router.push(`/space/${simpleGroup.id}`);
   };
 
   const formatTime = (dateString: string) => {
@@ -146,8 +158,8 @@ export default function SpacePage() {
                         profile={{
                           displayName: group.name,
                           username: null,
-                          avatarEmoji: group.avatarEmoji,
-                          avatarColor: group.avatarColor,
+                          avatarEmoji: group.avatarEmoji || null,
+                          avatarColor: group.avatarColor || null,
                           avatarUrl: null,
                         }}
                         size="lg"

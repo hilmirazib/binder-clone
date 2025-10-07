@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import {
   Plus,
   FileText,
@@ -9,9 +8,7 @@ import {
   Edit3,
   Trash2,
   Clock,
-  User,
   Search,
-  Filter,
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -48,7 +45,6 @@ export function NotesList({
   onEditNote,
   onViewNote,
 }: NotesListProps) {
-  const router = useRouter();
   const { user } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
   const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
@@ -136,7 +132,7 @@ export function NotesList({
     setConfirmOpen(true);
   };
 
-  const confirmDelete = async (noteId: string) => {
+  const confirmDelete = async () => {
     if (!deletingId) return;
     setIsDeleting(true);
 

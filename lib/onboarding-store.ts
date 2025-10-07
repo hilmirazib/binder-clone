@@ -44,7 +44,7 @@ interface OnboardingState {
 
 export const useOnboardingStore = create<OnboardingState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       currentStep: 0,
       phoneNumber: "",
       countryCode: "+62",

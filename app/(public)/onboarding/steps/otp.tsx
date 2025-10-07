@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useOnboardingStore } from "@/lib/onboarding-store";
 import { verifyOTP, sendPhoneOTP } from "@/lib/auth-helpers";
-import { Button } from "@/components/ui/button";
 import { otpSchema } from "@/lib/validation";
 import { OTPInput } from "@/components/onboarding/OTPInput";
 
